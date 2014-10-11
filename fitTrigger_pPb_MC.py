@@ -9,10 +9,10 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 process.TnP_Muon_ID = cms.EDAnalyzer("TagProbeFitTreeAnalyzer", 
     ## Input, output 
     #InputFileNames = cms.vstring("file:/afs/cern.ch/work/g/ginnocen/tnpJPsi_Data_TOTAL.root"),
-    InputFileNames = cms.vstring("file:tnpJPsi_MC_Total_v1.root"), 
-    OutputFileName = cms.string("fits2_TightID_MC_v5_BWResCBExp.root"),
+    InputFileNames = cms.vstring("file:TnPNtuple_pPb_MC_11October_v0.root"), 
+    OutputFileName = cms.string("outputTrigger.root"),
     InputTreeName = cms.string("fitter_tree"),
-    InputDirectoryName = cms.string("tpTreeSta"),
+    InputDirectoryName = cms.string("tpTree"),
     ## Variables for binning
     Variables = cms.PSet(
         mass   = cms.vstring("Tag-Probe Mass", "2.9", "3.3", "GeV/c^{2}"),
