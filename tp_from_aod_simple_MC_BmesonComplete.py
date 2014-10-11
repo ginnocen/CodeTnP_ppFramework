@@ -237,7 +237,8 @@ massSearchReplaceAnyInputTag(process.patMuonsWithTriggerSequenceSta, "mergedMuon
 ## Define probes and T&P pairs
 process.probeMuonsSta = cms.EDFilter("PATMuonSelector",
     src = cms.InputTag("patMuonsWithTriggerSta"),
-    cut = cms.string("outerTrack.isNonnull && !triggerObjectMatchesByCollection('hltL2MuonCandidates').empty()"), 
+    #cut = cms.string("outerTrack.isNonnull && !triggerObjectMatchesByCollection('hltL2MuonCandidates').empty()"), 
+    cut = cms.string("outerTrack.isNonnull"), 
 )
 
 #process.probeMuonsMCMatchSta = process.tagMuonsMCMatch.clone(src = "probeMuonsSta")
@@ -268,6 +269,7 @@ process.tpTreeSta = process.tpTree.clone(
         #QualityMuSta	= cms.string(QUALITY_CUTS),
         TM  = cms.string("isTrackerMuon"),
         Glb = cms.string("isGlobalMuon"),
+        Acc_JPsi = cms.string(IN_ACCEPTANCE),
         #l2muonobject = cms.string("!triggerObjectMatchesByCollection('hltL2MuonCandidates').empty()"),
         
 
