@@ -63,7 +63,7 @@ process.HLTMu   = process.triggerResultsFilter.clone(triggerConditions = [ 'HLT_
 from RecoMuon.MuonIdentification.calomuons_cfi import calomuons;
 process.mergedMuons = cms.EDProducer("CaloMuonMerger",
     mergeTracks = cms.bool(True),
-    mergeCaloMuons = cms.bool(False), # AOD
+    mergeCaloMuons = cms.bool(True), # AOD
     muons     = cms.InputTag("muons"), 
     caloMuons = cms.InputTag("calomuons"),
     tracks    = cms.InputTag("generalTracks"),
@@ -87,13 +87,6 @@ IN_ACCEPTANCE = "((abs(eta) <= 1.3 && pt > 3.3) || (1.3 < abs(eta) <= 2.2 && p >
 TRACK_CUTS = "(track.hitPattern.trackerLayersWithMeasurement > 5 && track.normalizedChi2 < 1.8 && track.hitPattern.pixelLayersWithMeasurement > 0 && abs(dB) < 3 && abs(track.dz) < 30)"
 GLB_CUTS = "(isTrackerMuon && muonID('TrackerMuonArbitrated') && muonID('TMOneStationTight'))"
 QUALITY_CUTS =  "(" + GLB_CUTS + " && " + TRACK_CUTS + ")"
-
-
-MuonQualityFlagspPb = cms.PSet(
-    TrackCuts	= cms.string(TRACK_CUTS),
-    GlobalCuts	= cms.string(GLB_CUTS),
-    QualityMu	= cms.string(QUALITY_CUTS)
-)
 
 
 from MuonAnalysis.TagAndProbe.common_variables_cff import *
@@ -148,9 +141,11 @@ process.tpTree = cms.EDAnalyzer("TagProbeFitTreeProducer",
     flags = cms.PSet(
        TrackQualityFlags,
        HFHIPhysicsFlagsTrigger,
-       MuonQualityFlagspPb,
        MuonIDFlags,
        Acc_JPsi = cms.string(IN_ACCEPTANCE),
+       TrackCuts	= cms.string(TRACK_CUTS),
+       GlobalCuts	= cms.string(GLB_CUTS),
+       QualityMu	= cms.string(QUALITY_CUTS),
     ),
     tagVariables = cms.PSet(
         pt  = cms.string('pt'),
@@ -223,7 +218,7 @@ process.tagAndProbe = cms.Path(
 
 ## Then make another collection for standalone muons, using standalone track to define the 4-momentum
 process.muonsSta = cms.EDProducer("RedefineMuonP4FromTrack",
-    src   = cms.InputTag("muons"),
+    src   = cms.InputTag("mergedMuons"),     #IT WAS "muons TO BE CHECKED WITH MUON POG"
     track = cms.string("outer"),
 )
 
@@ -250,7 +245,7 @@ process.tpTreeSta = process.tpTree.clone(
     tagProbePairs = "tpPairsSta",
     variables = cms.PSet(
         KinematicVariables, 
-        #StaOnlyVariables,
+        StaOnlyVariables,
         ## track matching variables
         tk_deltaR     = cms.InputTag("staToTkMatch","deltaR"),
         tk_deltaEta   = cms.InputTag("staToTkMatch","deltaEta"),
@@ -260,19 +255,12 @@ process.tpTreeSta = process.tpTree.clone(
         tk_deltaEta_NoBestJPsi   = cms.InputTag("staToTkMatchNoBestJPsi","deltaEta"),
     ),
     flags = cms.PSet(
-        #MuonIDFlags,
-        #MuonQualityFlagspPb,
+        MuonIDFlags,
         outerValidHits = cms.string("outerTrack.numberOfValidHits > 0"),
-        #Acc_JPsiSta = cms.string(IN_ACCEPTANCE),
-        #TrackCutsSta	= cms.string(TRACK_CUTS),
-        #GlobalCutsSta	= cms.string(GLB_CUTS),
-        #QualityMuSta	= cms.string(QUALITY_CUTS),
-        TM  = cms.string("isTrackerMuon"),
-        Glb = cms.string("isGlobalMuon"),
         Acc_JPsi = cms.string(IN_ACCEPTANCE),
-        #l2muonobject = cms.string("!triggerObjectMatchesByCollection('hltL2MuonCandidates').empty()"),
-        
-
+        TrackCutsSta	= cms.string("isCaloMuon &&"+TRACK_CUTS),
+        GlobalCutsSta	= cms.string(GLB_CUTS),
+        l2muonobject = cms.string("!triggerObjectMatchesByCollection('hltL2MuonCandidates').empty()"),
     ),
     tagVariables = cms.PSet(
         nVertices = cms.InputTag("nverticesModule"),
