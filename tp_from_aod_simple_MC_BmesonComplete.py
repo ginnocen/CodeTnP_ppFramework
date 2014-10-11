@@ -237,7 +237,7 @@ massSearchReplaceAnyInputTag(process.patMuonsWithTriggerSequenceSta, "mergedMuon
 ## Define probes and T&P pairs
 process.probeMuonsSta = cms.EDFilter("PATMuonSelector",
     src = cms.InputTag("patMuonsWithTriggerSta"),
-    cut = cms.string("outerTrack.isNonnull"), 
+    cut = cms.string("outerTrack.isNonnull && !triggerObjectMatchesByCollection('hltL2MuonCandidates').empty()"), 
 )
 
 #process.probeMuonsMCMatchSta = process.tagMuonsMCMatch.clone(src = "probeMuonsSta")
@@ -245,11 +245,11 @@ process.tpPairsSta = process.tpPairs.clone(decay = "tagMuons@+ probeMuonsSta@-",
 
 process.onePairSta = cms.EDFilter("CandViewCountFilter", src = cms.InputTag("tpPairsSta"), minNumber = cms.uint32(1))
 
-
 process.tpTreeSta = process.tpTree.clone(
     tagProbePairs = "tpPairsSta",
     variables = cms.PSet(
         KinematicVariables, 
+        #StaOnlyVariables,
         ## track matching variables
         tk_deltaR     = cms.InputTag("staToTkMatch","deltaR"),
         tk_deltaEta   = cms.InputTag("staToTkMatch","deltaEta"),
@@ -259,10 +259,17 @@ process.tpTreeSta = process.tpTree.clone(
         tk_deltaEta_NoBestJPsi   = cms.InputTag("staToTkMatchNoBestJPsi","deltaEta"),
     ),
     flags = cms.PSet(
+        #MuonIDFlags,
+        #MuonQualityFlagspPb,
         outerValidHits = cms.string("outerTrack.numberOfValidHits > 0"),
+        #Acc_JPsiSta = cms.string(IN_ACCEPTANCE),
+        #TrackCutsSta	= cms.string(TRACK_CUTS),
+        #GlobalCutsSta	= cms.string(GLB_CUTS),
+        #QualityMuSta	= cms.string(QUALITY_CUTS),
         TM  = cms.string("isTrackerMuon"),
         Glb = cms.string("isGlobalMuon"),
-        Acc_JPsi = cms.string(IN_ACCEPTANCE),
+        #l2muonobject = cms.string("!triggerObjectMatchesByCollection('hltL2MuonCandidates').empty()"),
+        
 
     ),
     tagVariables = cms.PSet(
