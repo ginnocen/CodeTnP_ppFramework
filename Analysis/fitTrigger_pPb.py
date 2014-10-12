@@ -6,7 +6,7 @@ process.load('FWCore.MessageService.MessageLogger_cfi')
 process.source = cms.Source("EmptySource")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 
-process.TnP_Muon_ID = cms.EDAnalyzer("TagProbeFitTreeAnalyzer", 
+process.TnP_Trigger = cms.EDAnalyzer("TagProbeFitTreeAnalyzer", 
     ## Input, output 
     #InputFileNames = cms.vstring("file:../Inputs/TnPNtuple_pPb_MC_11October_v0.root"), 
     #OutputFileName = cms.string("../ResultsFit/outputTriggerMC.root"),
@@ -34,7 +34,7 @@ process.TnP_Muon_ID = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
     ),
     ## What to fit
     Efficiencies = cms.PSet(
-        MuID_pt = cms.PSet(
+        Trg_pt = cms.PSet(
             UnbinnedVariables = cms.vstring("mass"),
             EfficiencyCategoryAndState = cms.vstring("PAMu3", "pass", "Acc_JPsi","pass"), ## Numerator definition
             BinnedVariables = cms.PSet(
@@ -76,4 +76,4 @@ process.TnP_Muon_ID = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
     SaveWorkspace = cms.bool(True),
 )
 
-process.p = cms.Path(process.TnP_Muon_ID)
+process.p = cms.Path(process.TnP_Trigger)

@@ -29,7 +29,7 @@ process.TnP_Tracking = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
     ),
     ## What to fit
     Efficiencies = cms.PSet(
-        MuID_pt = cms.PSet(
+        Trk_pt = cms.PSet(
             UnbinnedVariables = cms.vstring("mass"),
             EfficiencyCategoryAndState = cms.vstring("TM","pass","TrackCutsSta","pass"), ## Numerator definition
             BinnedVariables = cms.PSet(
