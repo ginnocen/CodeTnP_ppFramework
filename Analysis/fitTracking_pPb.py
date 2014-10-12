@@ -8,9 +8,10 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 
 process.TnP_Tracking = cms.EDAnalyzer("TagProbeFitTreeAnalyzer", 
     ## Input, output 
-    #InputFileNames = cms.vstring("file:/afs/cern.ch/work/g/ginnocen/tnpJPsi_Data_TOTAL.root"),
-    InputFileNames = cms.vstring("file:TnPNtuple_pPb_MC_11October_v0.root"), 
-    OutputFileName = cms.string("outputTracking.root"),
+    #InputFileNames = cms.vstring("file:../Inputs/TnPNtuple_pPb_MC_11October_v0.root"), 
+    #OutputFileName = cms.string("../ResultsFit/outputTrackingMC.root"),
+    InputFileNames = cms.vstring("file:../Inputs/TnPNtuple_pPb_Data_FirstRuns_11October_v0.root"), 
+    OutputFileName = cms.string("../ResultsFit/outputTrackingData.root"),
     InputTreeName = cms.string("fitter_tree"),
     InputDirectoryName = cms.string("tpTreeSta"),
     ## Variables for binning
@@ -38,7 +39,7 @@ process.TnP_Tracking = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
                 ## flags and conditions required at the denominator, 
                 Acc_JPsi = cms.vstring("pass"),
             ),
-            BinToPDFmap = cms.vstring("gaussPlusCubic"), ## PDF to use, as defined below
+            BinToPDFmap = cms.vstring("twoGaussPlusPoly1"), ## PDF to use, as defined below
         ),
     ),
 
@@ -75,6 +76,36 @@ process.TnP_Tracking = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
 		    "efficiency[0.9,0.2,1]",
 		    "signalFractionInPassing[0.9]",
         ),
+        
+       cbGaussPlusExpo = cms.vstring(
+        "CBShape::signal1(mass, mean[3.1,3.0,3.2], sigma1[0.01,0.01,0.1], alpha[0.5, 0.2, 3.0], n[2, 0.5, 100.])",
+		"Gaussian::signal2(mass, mean[3.1, 3.0, 3.2], sigma2[0.04,0.01,0.1])",
+		"SUM::signal(signal1,vFrac[0.8,0,1]*signal2)",
+        "Exponential::backgroundPass(mass, lp[0,-5,5])",
+        "Exponential::backgroundFail(mass, lf[0,-5,5])",
+        "efficiency[0.9,0,1]",
+        "signalFractionInPassing[0.9]"
+      ),
+       twoGaussPlusPoly4 = cms.vstring(
+        "Gaussian::signal1(mass, mean[3.1,3.0,3.2], sigma[0.10,0.05,0.250])",
+        "Gaussian::signal2(mass, mean2[3.15,3.0,3.3], sigma2[0.10,0.05,0.250])",
+        "SUM::signal(vfrac[0.5,0.01,1.0]*signal1,signal2)",
+        "Chebychev::backgroundPass(mass,{cP1[-0.5,-1.0,1.0],cP2[-0.1,-1.0,1.0],cP3[0.2,-1.0,1.0],cP4[-0.05,-1.0,1.0]})",
+        "Chebychev::backgroundFail(mass,{cF1[-0.5,-1.0,1.0],cF2[-0.1,-1.0,1.0],cF3[0.2,-1.0,1.0],cF4[-0.05,-1.0,1.0]})",
+        "efficiency[0.9,0,1]",
+        "signalFractionInPassing[0.9]"
+      ),
+      twoGaussPlusPoly1 = cms.vstring(
+        "Gaussian::signal1(mass, mean[3.1,3.0,3.2], sigma[0.10,0.05,0.400])",
+        "Gaussian::signal2(mass, mean2[3.15,3.0,3.3], sigma2[0.10,0.05,0.400])",
+        "SUM::signal(vfrac[0.5,0.01,1.0]*signal1,signal2)",
+        "Chebychev::backgroundPass(mass,{cP1[-0.5,-1.0,1.0],cP2[-0.1,-1.0,1.0]})",
+        "Chebychev::backgroundFail(mass,{cF1[-0.5,-1.0,1.0],cF2[-0.1,-1.0,1.0]})",
+        "efficiency[0.9,0,1]",
+        "signalFractionInPassing[0.9]"
+      ),
+
+
     ),
 
 

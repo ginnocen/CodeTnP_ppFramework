@@ -33,6 +33,10 @@ TH2F *plotEff2D(RooDataSet *a, TString b);
 TGraphAsymmErrors *plotEffPt(RooDataSet *a, int aa);
 TGraphAsymmErrors *plotEffEta(RooDataSet *a, int aa);
 
+const int ptbins=7;
+const int etabins=1;
+
+
 
 void ConvertIntoRootFiles(TString id="Trg") {
 
@@ -52,6 +56,20 @@ void ConvertIntoRootFiles(TString id="Trg") {
    outfile="Results/foutputTrigger.root";
   }
   
+  if(id=="Trk"){
+   infileMC= "../ResultsFit/outputTrackingMC.root";
+   infileData= "../ResultsFit/outputTrackingData.root";
+   rootstring="tpTreeSta/MuID_pt/fit_eff";
+   outfile="Results/foutputTracking.root";
+  }
+  
+  if(id=="MuonID"){
+   infileMC= "../ResultsFit/outputMuonIDMC.root";
+   infileData= "../ResultsFit/outputMuonIDData.root";
+   rootstring="tpTree/MuID_pt/fit_eff";
+   outfile="Results/foutputMuonID.root";
+  }
+  
   
   TFile *fMC = new TFile(infileMC);
   TFile *fData = new TFile(infileData);
@@ -68,12 +86,24 @@ void ConvertIntoRootFiles(TString id="Trg") {
   fEff_eta_MC->SetName("fEff_eta_MC");
   fEff_eta_Data->SetName("fEff_eta_Data");
   
+  
+ // for (int i=0;i<ptbins;i++){
+ //  for (int j=0;j<etabins;j++){
+ //   TCanvas *canvasMC = (TCanvas*)fMC->Get(Form("tpTree/MuID_pt/eta_bin%d_pt_bin%d_Acc_JPsi_GlobalCuts_pass_cbGaussPlusExpo/fit_canvas",j,i));
+ //   canvasMC->SaveAs(Form("Plots/canvas_ptbin_%d_etabin_%d",i,j));
+ //   }
+ // 
+ // }
+    
   TFile*foutput=new TFile(outfile,"recreate");
   foutput->cd();
   fEff_pt_MC->Write();
   fEff_pt_Data->Write();
   fEff_eta_MC->Write();
   fEff_eta_Data->Write();
+  
+  
+  
 
 }
 

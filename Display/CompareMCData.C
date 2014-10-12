@@ -11,6 +11,14 @@ void CompareMCData(TString id="Trg") {
    infile= "Results/foutputTrigger.root";
   }
   
+  if(id=="Trk"){
+   infile= "Results/foutputTracking.root";
+  }
+  
+  if(id=="MuonID"){
+   infile= "Results/foutputMuonID.root";
+  }
+  
   
   TFile *file = new TFile(infile);
 

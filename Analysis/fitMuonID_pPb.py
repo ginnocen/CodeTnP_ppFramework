@@ -43,35 +43,22 @@ process.TnP_Muon_ID = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
                 TM = cms.vstring("pass"), 
                 TrackCuts = cms.vstring("pass"),
             ),
-            BinToPDFmap = cms.vstring("gaussPlusExpo"), ## PDF to use, as defined below
+            BinToPDFmap = cms.vstring("cbGaussPlusExpo"), ## PDF to use, as defined below
         ),
     ),
 
     ## PDF for signal and background (double voigtian + exponential background)
     PDFs = cms.PSet(
 
-	VoigtExp = cms.vstring(
-
-		"Voigtian::signal(mass, mean[91,85,95], width[3,1,10], sigma[3,1,10])",
-
-		"Exponential::backgroundPass(mass, lp[0,-5,5])",
-
-		"Exponential::backgroundFail(mass, lf[0,-5,5])",
-
-		"efficiency[0.3,0,1]",
-
-		"signalFractionInPassing[0.9]"
-
-	),
-	BWResCBExp = cms.vstring(
-		"BreitWigner::bw(mass, m0[91.2,81.2,101.2], width[2.495,1,10])",
-		"RooCBShape::res(mass, peak[0], sigma[1.7,0.01,10], alpha[1.8,0,3], n[0.8,0,10])",
-		"FCONV::signal(mass, bw, res)",
-		"Exponential::backgroundPass(mass, lp[0,-5,5])",
-		"Exponential::backgroundFail(mass, lf[0,-5,5])",
-		"efficiency[0.9,0.5,1]",
-		"signalFractionInPassing[0.9]",
-    ),
+     cbGaussPlusExpo = cms.vstring(
+        "CBShape::signal1(mass, mean[3.1,3.0,3.2], sigma1[0.01,0.01,0.1], alpha[0.5, 0.2, 3.0], n[2, 0.5, 100.])",
+		"Gaussian::signal2(mass, mean[3.1, 3.0, 3.2], sigma2[0.04,0.01,0.1])",
+		"SUM::signal(signal1,vFrac[0.8,0,1]*signal2)",
+        "Exponential::backgroundPass(mass, lp[0,-5,5])",
+        "Exponential::backgroundFail(mass, lf[0,-5,5])",
+        "efficiency[0.9,0,1]",
+        "signalFractionInPassing[0.9]"
+      ),
     
         gaussPlusExpo = cms.vstring(
             "Gaussian::signal(mass, mean[3.1,3.0,3.2], sigma[0.05,0.01,0.14])",
@@ -80,6 +67,14 @@ process.TnP_Muon_ID = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
             "efficiency[0.0,1]",
             "signalFractionInPassing[0.4,1]"
         ),
+        
+       cbPlusPoly = cms.vstring(
+        "CBShape::signal(mass, mean[3.1,3.0,3.2], sigma[0.02, 0.01, 0.05], alpha[4.5, 4.0, 5.0], n[50, 10.0, 100.])",
+        "Chebychev::backgroundPass(mass, {cPass[0,-1.0,1.0], cPass2[0,-1.0,1.0]})",
+        "Chebychev::backgroundFail(mass, {cFail[0,-1.0,1.0], cFail2[0,-1.0,1.0]})",
+        "efficiency[0.9,0,1]",
+        "signalFractionInPassing[0.9]"
+       ),
     ),
 
 
