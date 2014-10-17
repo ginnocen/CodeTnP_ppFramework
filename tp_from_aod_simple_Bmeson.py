@@ -77,7 +77,7 @@ addHLTL1Passthrough(process)
 changeTriggerProcessName(process, "*")
 
 IN_ACCEPTANCE = "((abs(eta) <= 1.3 && pt > 3.3) || (1.3 < abs(eta) <= 2.2 && p > 2.9) || (2.2 < abs(eta) <= 2.4 && pt > 0.8))"
-TRACK_CUTS = "(track.hitPattern.trackerLayersWithMeasurement > 5 && track.normalizedChi2 < 1.8 && track.hitPattern.pixelLayersWithMeasurement > 0 && abs(dB) < 3 && abs(track.dz) < 30)"
+TRACK_CUTS = "(isTrackerMuon) && (track.hitPattern.trackerLayersWithMeasurement > 5 && track.normalizedChi2 < 1.8 && track.hitPattern.pixelLayersWithMeasurement > 0 && abs(dB) < 3 && abs(track.dz) < 30)"
 MUONID = "(muonID('TrackerMuonArbitrated') && muonID('TMOneStationTight'))"
 
 from MuonAnalysis.TagAndProbe.common_variables_cff import *
@@ -85,7 +85,7 @@ process.load("MuonAnalysis.TagAndProbe.common_modules_cff")
 
 process.tagMuons = cms.EDFilter("PATMuonSelector",
     src = cms.InputTag("patMuonsWithTrigger"),
-    cut = cms.string(TRACK_CUTS+ " && (isTrackerMuon) &&"+ IN_ACCEPTANCE +"&&"+ MUONID+ "&& (!triggerObjectMatchesByPath('HLT_PAMu3_v*',1,0).empty())"),
+    cut = cms.string(TRACK_CUTS+ "&&"+ IN_ACCEPTANCE +"&&"+ MUONID+ "&& (!triggerObjectMatchesByPath('HLT_PAMu3_v*',1,0).empty())"),
 )
 
 process.oneTag  = cms.EDFilter("CandViewCountFilter", src = cms.InputTag("tagMuons"), minNumber = cms.uint32(1))
@@ -208,7 +208,7 @@ process.tagAndProbe = cms.Path(
 
 ## Then make another collection for standalone muons, using standalone track to define the 4-momentum
 process.muonsSta = cms.EDProducer("RedefineMuonP4FromTrack",
-    src   = cms.InputTag("mergedMuons"),     #IT WAS "muons TO BE CHECKED WITH MUON POG"
+    src   = cms.InputTag("muons"),     #IT WAS "muons TO BE CHECKED WITH MUON POG"
     track = cms.string("outer"),
 )
 
