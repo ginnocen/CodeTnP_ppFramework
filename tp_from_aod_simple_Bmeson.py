@@ -193,7 +193,6 @@ process.tnpSimpleSequence = cms.Sequence(
 
 process.tagAndProbe = cms.Path( 
     process.PAcollisionEventSelection *
-    #process.fastFilter +
     process.HLTMu    +
     process.mergedMuons                 *
     process.patMuonsWithTriggerSequence *
@@ -281,7 +280,6 @@ process.tnpSimpleSequenceSta = cms.Sequence(
 
 process.tagAndProbeSta = cms.Path( 
     process.PAcollisionEventSelection *
-    #process.fastFilter +
     process.HLTMu      +
     process.muonsSta                       +
     process.patMuonsWithTriggerSequenceSta +
